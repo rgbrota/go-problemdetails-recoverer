@@ -26,7 +26,7 @@ func panicingAbortHandler(http.ResponseWriter, *http.Request) {
 func TestNew(t *testing.T) {
 	expected := generateExpectedResponse(JSON, internalServerErrorType)
 
-	ts := httptest.NewServer(New(http.HandlerFunc(panicingHandler)))
+	ts := httptest.NewServer(Default(http.HandlerFunc(panicingHandler)))
 	defer ts.Close()
 
 	res, _ := http.Get(fmt.Sprintf("%s/", ts.URL))
@@ -102,7 +102,7 @@ func TestNewWithConfig(t *testing.T) {
 				ProblemDetailsType: test.args.problemDetailsType,
 			}
 
-			ts := httptest.NewServer(NewWithConfig(http.HandlerFunc(panicingHandler), config))
+			ts := httptest.NewServer(WithConfig(http.HandlerFunc(panicingHandler), config))
 			defer ts.Close()
 
 			res, _ := http.Get(fmt.Sprintf("%s/", ts.URL))
@@ -182,7 +182,7 @@ func TestRecovererLogs(t *testing.T) {
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest(http.MethodGet, "/", nil)
 
-			h := NewWithConfig(http.HandlerFunc(panicingHandler), config)
+			h := WithConfig(http.HandlerFunc(panicingHandler), config)
 
 			h.ServeHTTP(w, req)
 
@@ -202,7 +202,7 @@ func TestRecovererAbortHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/", nil)
 
-	h := New(http.HandlerFunc(panicingAbortHandler))
+	h := Default(http.HandlerFunc(panicingAbortHandler))
 
 	h.ServeHTTP(w, req)
 }

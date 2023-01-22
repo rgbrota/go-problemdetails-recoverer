@@ -45,14 +45,14 @@ var defaultRecoverConfig = RecovererConfig{
 	ProblemDetailsType: internalServerErrorType,
 }
 
-// New creates a middleware which recovers from panics and returns a HTTP status
+// Default creates a middleware which recovers from panics and returns a HTTP status
 // Internal Server Error with a Problem Details body following the RFC7807 specification.
-func New(next http.Handler) http.Handler {
-	return NewWithConfig(next, defaultRecoverConfig)
+func Default(next http.Handler) http.Handler {
+	return WithConfig(next, defaultRecoverConfig)
 }
 
-// NewWithConfig creates a new Recoverer middleware with the given config.
-func NewWithConfig(next http.Handler, config RecovererConfig) http.Handler {
+// WithConfig creates a new Recoverer middleware with the given config.
+func WithConfig(next http.Handler, config RecovererConfig) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
